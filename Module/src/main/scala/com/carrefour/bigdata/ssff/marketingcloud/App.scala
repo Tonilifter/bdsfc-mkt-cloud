@@ -11,7 +11,7 @@ object App {
 
     val Logger = LoggerFactory.getLogger(getClass)
 
-    val df=Context.spark.sql(Queries.getInfoContracts()).limit(1000)
+    val df=Context.spark.sql(Queries.getInfoContracts())
 
     val  props = new Properties()
     props.put("bootstrap.servers", Utils.bootstrapServers)
@@ -22,7 +22,7 @@ object App {
     props.put("linger.ms", 10.asInstanceOf[Integer])
     props.put("acks", "all")
 
-
+    System.setProperty("java.security.krb5.conf", "/etc/krb5.conf")
 
     val kafkaUserDF: DataFrame = df.select(df.col("ido_contrato").alias("key"),to_json(struct(df.columns.map(column):_*)).alias("value"))
 
