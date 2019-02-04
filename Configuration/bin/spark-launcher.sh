@@ -27,6 +27,8 @@ echo ${KEYTABUSER}
 KEYTAB=${HOME}/${KEYTABUSER}.keytab
 PRINCIPAL=${USER}@ES.WCORP.CARREFOUR.COM
 ASPECT_LIBRARY=$(find /proyectos/dg/aspectos/data-governance-agents*.jar)
+WEAVER_RESOURCE=$(find /proyectos/dg/aspectos/aspectjweaver*.jar)
+WEAVER_LIBRARY=$(ls /proyectos/dg/aspectos/aspectjweaver*.jar | xargs -l basename)
 
 loadConf(){
    while read -r line
@@ -36,7 +38,7 @@ done < "$FILE"
 }
 
 loadJars(){
-  echo "--jars "${ASPECT_LIBRARY}','$(ls ../lib/*.jar | tr '\n' ',')
+  echo "--jars "${ASPECT_LIBRARY}','${WEAVER_RESOURCE}','$(ls ../lib/*.jar | tr '\n' ',')
 }
 
 loadKerberosConf(){
@@ -52,10 +54,10 @@ spark2-submit \
   --deploy-mode cluster \
   --name ${NAME} \
   --files ../conf/log4j.xml,../conf/application.conf,../conf/kafka_jaas.conf \
-  --conf spark.driver.extraJavaOptions="-Djava.security.auth.login.config=./kafka_jaas.conf -Dlog4j.configuration=./log4j.xml -javaagent:aspectjweaver-1.8.13.jar" \
+  --conf spark.driver.extraJavaOptions="-Djava.security.auth.login.config=./kafka_jaas.conf -Dlog4j.configuration=./log4j.xml -javaagent:${WEAVER_LIBRARY}" \
   --conf spark.driver.extraClassPath="conf/:/opt/cloudera/parcels/CDH/lib/flume-ng/lib/flume-ng-log4jappender-1.6.0-cdh5.14.2.jar" \
   --conf spark.executor.extraClassPath="conf/:/opt/cloudera/parcels/CDH/lib/flume-ng/lib/flume-ng-log4jappender-1.6.0-cdh5.14.2.jar" \
-  --conf spark.executor.extraJavaOptions="-Djava.security.auth.login.config=./kafka_jaas.conf -Dlog4j.configuration=log4j.xml -javaagent:aspectjweaver-1.8.13.jar" \
+  --conf spark.executor.extraJavaOptions="-Djava.security.auth.login.config=./kafka_jaas.conf -Dlog4j.configuration=log4j.xml -javaagent:${WEAVER_LIBRARY}" \
 $(loadKerberosConf) \
 $(loadConf) \
   --class ${CLASS} \

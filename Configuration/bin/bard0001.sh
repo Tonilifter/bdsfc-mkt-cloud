@@ -6,7 +6,7 @@ loadJar(){
 }
 
 JAR=$(loadJar)
-CLASS="com.carrefour.bigdata.ssff.marketingcloud"
+CLASS="com.carrefour.bigdata.ssff.marketingcloud.App"
 FILE="../conf/bard0001.cfg"
 NAME="Contracts_Extractor_Confluent"
 
