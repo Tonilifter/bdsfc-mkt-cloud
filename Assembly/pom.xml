@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.carrefour.bigdata.ssff.marketingcloud</groupId>
         <artifactId>bdsfc-mkt-cloud-parent</artifactId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.0</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <artifactId>bdsfc-mkt-cloud.Assembly</artifactId>
