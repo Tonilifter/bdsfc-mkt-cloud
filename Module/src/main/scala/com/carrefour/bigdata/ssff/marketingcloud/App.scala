@@ -11,9 +11,6 @@ object App {
 
     val Logger = LoggerFactory.getLogger(getClass)
 
-    //val query = Context.kuduContext.sql(Queries.getInfoContracts(), Queries.SB_SS_TABLES)
-
-    //val df=Context.spark.read.format("parquet").table("ssff_user.contratos_actual")
     val df=Context.spark.sql(Queries.getInfoContracts()).limit(1000)
 
     val  props = new Properties()
@@ -33,7 +30,7 @@ object App {
     kafkaUserDF.foreachPartition(row => {
       val producer = new KafkaProducer[String, String](props)
       row.foreach(x=> {
-        producer.send(new ProducerRecord[String,String]("sfc_raw_monext_contratos",x.getString(0),x.getString(1)))
+        producer.send(new ProducerRecord[String,String](Utils.topic,x.getString(0),x.getString(1)))
         producer.flush()
         Logger.info("RECORD ENVIADO")
 
